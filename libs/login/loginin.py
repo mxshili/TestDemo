@@ -1,5 +1,3 @@
-from time import sleep
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -26,9 +24,9 @@ class login:
 
         wd.find_element(By.CSS_SELECTOR,'button[id="loginBtn"]').click()
 
-        # sleep(0.5)
 
         WebDriverWait(wd,10,0.5).until(lambda el:wd.switch_to.alert.text)
 
         alerttext = wd.switch_to.alert.text
-        print(alerttext)
+
+        return alerttext
