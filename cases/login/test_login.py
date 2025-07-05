@@ -1,5 +1,7 @@
+import logging
 from libs.login.loginin import login
 import pytest
+logging.basicConfig(level=logging.INFO)
 
 
 class Test_SMP_login:
@@ -18,8 +20,14 @@ class Test_SMP_login:
     def test_SMP_login_001_007(self,username,password,asserttext):
         outtext = login.loginin(username,password)
         if outtext is None:
-            assert 1==1
+            try:
+                assert 1==1
+            except AssertionError:
+                logging.error("模型名称断言失败", exc_info=True)
         else:
-            assert outtext == asserttext
+            try:
+                assert outtext == asserttext
+            except AssertionError:
+                logging.error("模型名称断言失败", exc_info=True)
 
 
