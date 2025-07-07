@@ -23,11 +23,11 @@ class Test_SMP_login:
             try:
                 assert 1==1
             except AssertionError:
-                logging.error("模型名称断言失败", exc_info=True)
+                logging.error(f"模型名称断言失败，预期为{asserttext},实际为{outtext}", exc_info=True)
         else:
             try:
                 assert outtext == asserttext
             except AssertionError:
-                logging.error("模型名称断言失败", exc_info=True)
+                logging.error(f"模型名称断言失败，预期为{asserttext},实际为{outtext}", exc_info=True)
 
 
