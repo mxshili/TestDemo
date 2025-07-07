@@ -25,7 +25,7 @@ class login:
         wd.find_element(By.CSS_SELECTOR,'button[id="loginBtn"]').click()
 
 
-        WebDriverWait(wd,10,0.5).until(lambda el:wd.switch_to.alert.text)
+        WebDriverWait(wd,10,1).until(lambda el:wd.switch_to.alert.text)
 
         alerttext = wd.switch_to.alert.text
 
