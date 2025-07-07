@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class login:
 
-    def loginin(username = 'byhy',password = 'sdfsdf'):
+    def loginin(self,username = 'byhy',password = 'sdfsdf'):
 
         wd = webdriver.Edge()
         wd.implicitly_wait(10)
