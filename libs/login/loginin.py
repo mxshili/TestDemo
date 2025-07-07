@@ -24,9 +24,12 @@ class login:
 
         wd.find_element(By.CSS_SELECTOR,'button[id="loginBtn"]').click()
 
+        try:
+            WebDriverWait(wd,10,1).until(lambda el:wd.switch_to.alert.text)
+            alerttext = wd.switch_to.alert.text
+            return alerttext
+        except TimeoutException:
+            return '登录超时'
+        finally:
+            wd.quit()
 
-        WebDriverWait(wd,10,1).until(lambda el:wd.switch_to.alert.text)
-
-        alerttext = wd.switch_to.alert.text
-
-        return alerttext
