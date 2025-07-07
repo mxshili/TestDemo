@@ -19,15 +19,9 @@ class Test_SMP_login:
     ],scope='function')
     def test_SMP_login_001_007(self,username,password,asserttext):
         outtext = login.loginin(username,password)
-        if outtext is None:
-            try:
-                assert 1==1
-            except AssertionError:
-                logging.error(f"模型名称断言失败，预期为{asserttext},实际为{outtext}", exc_info=True)
-        else:
-            try:
-                assert outtext == asserttext
-            except AssertionError:
-                logging.error(f"模型名称断言失败，预期为{asserttext},实际为{outtext}", exc_info=True)
+        try:
+            assert outtext == asserttext
+        except AssertionError:
+            logging.error(f"模型名称断言失败，预期为{asserttext},实际为{outtext}", exc_info=True)
 
 
