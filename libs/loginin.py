@@ -2,10 +2,8 @@ from time import sleep
 
 from selenium.webdriver.common.by import By
 from selenium import webdriver
-import pytest
 
 
-@pytest.fixture(scope='function')
 def login():
     wd = webdriver.Edge()
     wd.implicitly_wait(10)

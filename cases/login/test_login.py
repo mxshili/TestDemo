@@ -3,7 +3,7 @@ from libs.login.loginin import login
 import pytest
 logging.basicConfig(level=logging.INFO)
 
-
+# 优化点：数据分离 CI/CD集成
 class Test_SMP_login:
 
     name = '登录用例测试'
