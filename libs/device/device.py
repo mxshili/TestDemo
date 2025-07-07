@@ -5,13 +5,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
+logging.basicConfig(level=logging.INFO)
 
-
-class device:
+class Device:
 
     name = '设备添加'
 
-    def testdevice(types, modeltypes, ruletypes, machinenumber, description):
+    def test_device(types, modeltypes, ruletypes, machinenumber, description):
 
         wd = login()
         # 进入设备界面
@@ -43,14 +43,19 @@ class device:
         fields = wd.find_elements(By.CSS_SELECTOR,'.result-list-item-info .field-value')
 
         try:
-          assert fields[0].text == selectTypes[0].text
-          assert fields[1].text == selectmodelTypes[0].text
-          assert fields[2].text == machinenumber
-          assert fields[4].text == selectruleTypes[0].text
-          assert fields[5].text == description
+          assert fields[0].text == selectTypes[0].text,\
+                  f"设备类型不匹配: 预期{selectTypes[0].text} ≠ 实际{fields[0].text}"
+          assert fields[1].text == selectmodelTypes[0].text, \
+                  f"设备类型不匹配: 预期{selectmodelTypes[0].text} ≠ 实际{fields[1].text}"
+          assert fields[2].text == machinenumber, \
+                  f"设备类型不匹配: 预期{machinenumber} ≠ 实际{fields[2].text}"
+          assert fields[4].text == selectruleTypes[0].text,\
+                  f"设备类型不匹配: 预期{selectruleTypes[0].text} ≠ 实际{fields[4].text}"
+          assert fields[5].text == description, \
+                  f"设备类型不匹配: 预期{description} ≠ 实际{fields[5].text}"
           return f"添加成功: {types}-{modeltypes}-{ruletypes}-{machinenumber}-{description}"
-        except AssertionError:
+        except AssertionError as e:
+            print(f"捕获到错误: {logging.error(f"断言捕获:{e}", exc_info=True)}")
             wd.save_screenshot('error.png')
-            logging.error("模型名称断言失败", exc_info=True)
             wd.quit()
             return "出现异常"

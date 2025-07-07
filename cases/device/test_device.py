@@ -15,4 +15,5 @@ class TestDevice:
 
     def test_device_001_301(self,types,modeltypes,ruletypes,machinenumber,description):
 
-        device.device.testdevice(types,modeltypes,ruletypes,machinenumber,description)
+        result = device.Device.test_device(types,modeltypes,ruletypes,machinenumber,description)
+        print(result)
