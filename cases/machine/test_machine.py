@@ -16,19 +16,19 @@ class TestMachine:
     ],scope='function')
 
     def test_SMP_device_model_add_001_301(self,model,description,types):
-        machine_update.machine.machine_add(model, description, types)
-
+        resulttext = machine_update.machine.machine_add(model, description, types)
+        print(resulttext)
 
     @pytest.mark.parametrize('modeltext,description',[
         ('bokpower-charger-g22-220v440w','大连bok 2022款450瓦 电瓶车充电站')
     ],scope='function')
     def test_SMP_device_model_change_501(self,modeltext,description):
-        machine_update.machine.machine_change(description)
-
+        resulttext = machine_update.machine.machine_change(description)
+        print(resulttext)
 
     def test_SMP_device_model_delete_601(self):
-        machine_update.machine.machine_delete()
-
+        resulttext = machine_update.machine.machine_delete()
+        print(resulttext)
 
 
 

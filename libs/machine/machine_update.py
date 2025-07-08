@@ -24,7 +24,7 @@ class machine(setup_browser()):
 
     name = '设备界面的增删改查'
 
-    def machine_add(model, description, types):
+    def machine_add(self,model, description, types):
         # 检查参数
         if not all([model,description,types]):
             raise ValueError("model / description / types 中存在空值")
@@ -35,6 +35,7 @@ class machine(setup_browser()):
             lambda el:wd.find_element(By.CSS_SELECTOR,'.add-one-area>.btn'))
         # 找到添加按钮，选择并输入元素
         addbutton.click()
+
         select = Select(wd.find_element(By.ID,'device-type'))
         select.select_by_visible_text(types)
         symbols = select.all_selected_options
@@ -52,20 +53,22 @@ class machine(setup_browser()):
         symbol = symbols[0]
 
         try:
-            assert lists[0].text == symbol.text
-            assert lists[1].text == model
-            assert lists[2].text == description
+            assert lists[0].text == symbol.text,\
+                f"提交值{lists[0].text}与添加值{symbol.text}不匹配"
+            assert lists[1].text == model,\
+                f"提交值{lists[1].text}与添加值{model}不匹配"
+            assert lists[2].text == description,\
+                f"提交值{lists[2].text}与添加值{description}不匹配"
             logging.info("添加设备型号成功")
+            return f"添加成功: {model} - {description} - {types}"
         except AssertionError:
             # 截图保存有利于查看Error
             wd.save_screenshot("error.png")
             logging.error("模型名称断言失败", exc_info=True)
             raise
 
-        return f"添加成功: {model} - {description} - {types}"
 
-
-    def machine_change(modeltext, description):
+    def machine_change(self,modeltext, description):
 
         if not all([modeltext, description]):
             raise ValueError("modeltext / description 中存在空值")
@@ -85,21 +88,22 @@ class machine(setup_browser()):
 
         wd.find_element(By.CSS_SELECTOR,'.result-list-item-btn-bar .btn-no-border:nth-child(1)').click()
 
-        sleep(1)
+        WebDriverWait(wd,10,0.5).until(wd.find_element(By.XPATH,'//div[@class="result-list-item-info"]/*[2]/span[@class="field-value"]'))
 
         newmodeltext = wd.find_element(By.XPATH,'//div[@class="result-list-item-info"]/*[2]/span[@class="field-value"]')
         newdescription = wd.find_element(By.XPATH,'//div[@class="result-list-item-info"]/*[3]/span[@class="field-value"]')
 
         try:
-            assert modeltext == newmodeltext.text
-            assert description == newdescription.text
+            assert modeltext == newmodeltext.text,\
+                f"断言失败，修改值{modeltext}与提交值{newmodeltext.text}不符"
+            assert description == newdescription.text,\
+                f"断言失败，修改值{description}与提交值{newdescription.text}不符"
+            return f"修改成功: {modeltext} - {description}"
         except AssertionError:
             # 截图保存有利于查看Error
             wd.save_screenshot("error.png")
             logging.error("模型名称断言失败", exc_info=True)
             raise
-
-        return f"修改成功: {modeltext} - {description}"
 
 
     def machine_delete(self):
@@ -113,6 +117,9 @@ class machine(setup_browser()):
 
         oldmodeltext = wd.find_element(By.XPATH,modeltextpath).text
         wd.find_element(By.CSS_SELECTOR,'.result-list-item-btn-bar>.btn-no-border').click()
+
+        WebDriverWait(wd,10,0.5).until(wd.switch_to.alert.text)
+
         notice = wd.switch_to.alert.text
         wd.switch_to.alert.accept()
 
@@ -120,15 +127,16 @@ class machine(setup_browser()):
         newmodeltext = wd.find_element(By.XPATH,modeltextpath).text
 
         try:
-            assert notice == '确定要删除本记录吗？'
-            assert oldmodeltext != newmodeltext
+            assert notice == '确定要删除本记录吗？',\
+            f"断言错误，{notice}不符"
+            assert oldmodeltext != newmodeltext,\
+            f"断言错误，{oldmodeltext}与{newmodeltext}相符，重新删除"
+            return f"删除成功: {oldmodeltext} - {newmodeltext}"
         except AssertionError:
             # 截图保存有利于查看Error
             wd.save_screenshot("error.png")
             logging.error("模型名称断言失败", exc_info=True)
             raise
-
-        return f"删除成功: {oldmodeltext} - {newmodeltext}"
 
 
 
