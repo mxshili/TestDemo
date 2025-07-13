@@ -1,35 +1,24 @@
 from time import sleep
-
-import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from cases.machine.test_machine import setup_browser
 import logging
-
-from libs.loginin import login
+import pytest
 logging.basicConfig(level=logging.INFO)
 
-@pytest.fixture(scope="module")
-def setup_browser():
-    """初始化浏览器并登录系统"""
-    wd = login()
-    # 点击设备型号界面
-    wd.find_element(By.CSS_SELECTOR,'a[href="#/devicemodel"]').click()
-    yield wd
-    wd.quit()
 
-@pytest.fixture()
-class machine(setup_browser()):
+class machine:
 
     name = '设备界面的增删改查'
 
-    def machine_add(self,model, description, types):
+    def machine_add(self, model, description, types, setup_browser):
         # 检查参数
         if not all([model,description,types]):
             raise ValueError("model / description / types 中存在空值")
 
-        wd = setup_browser()
+        wd = setup_browser
 
         addbutton = WebDriverWait(wd,10,0.5).until(
             lambda el:wd.find_element(By.CSS_SELECTOR,'.add-one-area>.btn'))
@@ -68,12 +57,12 @@ class machine(setup_browser()):
             raise
 
 
-    def machine_change(self,modeltext, description):
+    def machine_change(self,modeltext, description, setup_browser):
 
         if not all([modeltext, description]):
             raise ValueError("modeltext / description 中存在空值")
 
-        wd = setup_browser()
+        wd = setup_browser
 
         locator = (By.XPATH,'//div[@class="result-list-item-btn-bar"]/*[2]')
         WebDriverWait(wd,10,0.5).until(EC.visibility_of_element_located(locator))
@@ -88,7 +77,8 @@ class machine(setup_browser()):
 
         wd.find_element(By.CSS_SELECTOR,'.result-list-item-btn-bar .btn-no-border:nth-child(1)').click()
 
-        WebDriverWait(wd,10,0.5).until(wd.find_element(By.XPATH,'//div[@class="result-list-item-info"]/*[2]/span[@class="field-value"]'))
+        locator = (By.XPATH,'//div[@class="result-list-item-info"]/*[2]/span[@class="field-value"]')
+        WebDriverWait(wd,10,0.5).until(EC.visibility_of_element_located(locator))
 
         newmodeltext = wd.find_element(By.XPATH,'//div[@class="result-list-item-info"]/*[2]/span[@class="field-value"]')
         newdescription = wd.find_element(By.XPATH,'//div[@class="result-list-item-info"]/*[3]/span[@class="field-value"]')
@@ -106,9 +96,9 @@ class machine(setup_browser()):
             raise
 
 
-    def machine_delete(self):
+    def machine_delete(self,setup_browser):
 
-        wd = setup_browser()
+        wd = setup_browser
 
         locator = (By.XPATH,'//div[@class="result-list-item-info"]/*[3]/span[@class="field-value"]')
         WebDriverWait(wd,10,0.5).until(EC.visibility_of_element_located(locator))
@@ -118,7 +108,8 @@ class machine(setup_browser()):
         oldmodeltext = wd.find_element(By.XPATH,modeltextpath).text
         wd.find_element(By.CSS_SELECTOR,'.result-list-item-btn-bar>.btn-no-border').click()
 
-        WebDriverWait(wd,10,0.5).until(wd.switch_to.alert.text)
+        WebDriverWait(wd,10,0.5).until(EC.alert_is_present())
+        localert = wd.switch_to.alert.text
 
         notice = wd.switch_to.alert.text
         wd.switch_to.alert.accept()

@@ -1,6 +1,17 @@
 import pytest
-
+from libs.loginin import login
+from selenium.webdriver.common.by import By
 from libs.machine import machine_update
+
+
+@pytest.fixture(scope="function")
+def setup_browser():
+    """初始化浏览器并登录系统"""
+    wd = login()
+    # 点击设备型号界面
+    wd.find_element(By.CSS_SELECTOR,'a[href="#/devicemodel"]').click()
+    yield wd
+    wd.quit()
 
 
 class TestMachine:
@@ -14,20 +25,19 @@ class TestMachine:
         ('njcw-carwasher-g22-2s','南京e生活2022款洗车机 2个洗车位','洗车站'),
         ('yixun-charger-g22-220v7kw','南京易迅能源2022款7千瓦汽车充电站','汽车充电站'),
     ],scope='function')
-
-    def test_SMP_device_model_add_001_301(self,model,description,types):
-        resulttext = machine_update.machine.machine_add(model, description, types)
+    def test_SMP_device_model_add_001_301(self,model,description,types,setup_browser):
+        resulttext = machine_update.machine.machine_add(self, model, description, types, setup_browser)
         print(resulttext)
 
     @pytest.mark.parametrize('modeltext,description',[
         ('bokpower-charger-g22-220v440w','大连bok 2022款450瓦 电瓶车充电站')
     ],scope='function')
-    def test_SMP_device_model_change_501(self,modeltext,description):
-        resulttext = machine_update.machine.machine_change(description)
+    def test_SMP_device_model_change_501(self,modeltext,description,setup_browser):
+        resulttext = machine_update.machine.machine_change(self,modeltext,description,setup_browser)
         print(resulttext)
 
-    def test_SMP_device_model_delete_601(self):
-        resulttext = machine_update.machine.machine_delete()
+    def test_SMP_device_model_delete_601(self, setup_browser):
+        resulttext = machine_update.machine.machine_delete(self,setup_browser)
         print(resulttext)
 
 
