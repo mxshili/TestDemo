@@ -5,23 +5,23 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
-from libs.business_rule.share import browser_add
+from cases.business_rule.test_business_rule import browser
 from libs.loginin import login
 logging.basicConfig(level=logging.INFO)
 import pytest
 
 
-name = '业务规则添加'
 
+class business:
 
-@pytest.fixture()
-class business(browser_add()):
+    name = '业务规则添加'
 
-    def test_service_rule_type1(ruleName,minConsume,estimateConsume,measurement,
-                              measurePrice,description,types):
-
-            wd = browser_add()
+    def test_service_rule_type1(ruleName, minConsume, estimateConsume, measurement,
+                                measurePrice, description, types, browser):
             # 选择类型
+            wd = browser
+            wd.find_element(By.XPATH,'//ul[@class="side-menu"]//li[@class="menu-item"]//a[@href="#/svcrule"]').click()
+            wd.find_element(By.XPATH,'//div[@class="add-one-area"]/span').click()
             Select(wd.find_element(By.ID,'rule_type_id')).select_by_value(types)
             select = Select(wd.find_element(By.ID,'rule_type_id')).all_selected_options
 
@@ -60,10 +60,12 @@ class business(browser_add()):
 
             return f"添加成功: {ruleName}-{minConsume}-{estimateConsume}-{measurement}-{measurePrice}-{description}-{types}"
 
-    def test_service_rule_type2(ruleName,minConsume,estimateConsume,description,types):
+    def test_service_rule_type2(ruleName, minConsume, estimateConsume, description, types, browser):
 
-            wd = browser_add()
+            wd = browser
             # 选择类型
+            wd.find_element(By.XPATH,'//ul[@class="side-menu"]//li[@class="menu-item"]//a[@href="#/svcrule"]').click()
+            wd.find_element(By.XPATH,'//div[@class="add-one-area"]/span').click()
             Select(wd.find_element(By.ID,'rule_type_id')).select_by_value(types)
             select_options = Select(wd.find_element(By.ID,'rule_type_id')).all_selected_options
 
@@ -93,12 +95,19 @@ class business(browser_add()):
             return f"添加成功: {ruleName}-{minConsume}-{estimateConsume}-{description}-{types}"
 
 
-    def test_service_rule_type3(ruleName,businesscode,measurement,measurePrice,description,types):
+    def test_service_rule_type3(ruleName,businesscode,measurement,measurePrice,description,types,browser):
 
 
-            wd = browser_add()
+            wd = browser
+
+            wd.find_element(By.XPATH,'//ul[@class="side-menu"]//li[@class="menu-item"]//a[@href="#/svcrule"]').click()
+            wd.find_element(By.XPATH,'//div[@class="add-one-area"]/span').click()
             # 选择类型
+            Select(wd.find_element(By.ID,'rule_type_id')).select_by_value(types)
+            select_options = Select(wd.find_element(By.ID,'rule_type_id')).all_selected_options
 
+    # 选择类型
+            inputs = wd.find_elements(By.XPATH,'//div[@class="add-one-area"]//input')
             inputs[0].send_keys(ruleName)
             inputs[1].send_keys(businesscode)
             inputs[2].send_keys(measurement)
@@ -111,7 +120,7 @@ class business(browser_add()):
             # 显示等待
             try:
                 WebDriverWait(wd,10,0.5).until(lambda el:wd.find_elements(By.CSS_SELECTOR,'.result-list-item:nth-child(1) .field-value'))
-            finally:
+            except TimeoutError:
                 wd.quit()
 
             newinputs = wd.find_elements(By.CSS_SELECTOR,'.result-list-item:nth-child(1) .field-value')
